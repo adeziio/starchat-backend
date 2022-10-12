@@ -33,3 +33,70 @@ def create_db():
             )'''
         )
     con.close()
+
+
+def hasUser(username):
+    ret = True
+    try:
+        ls = []
+        con = sqlite3.connect(db_name)
+        con.row_factory = sqlite3.Row
+        cur = con.cursor()
+        query = f"select * from {table_name} where {user_name} = '{username}'"
+        for row in cur.execute(query):
+            ls.append({
+                user_id: row[user_id],
+                user_name: row[user_name],
+            })
+    except Exception as e:
+        ret = False
+    if (len(ls) == 0):
+        ret = False
+    return ret
+
+
+def getUser(username):
+    status = 'success'
+    message = ''
+    try:
+        ls = []
+        con = sqlite3.connect(db_name)
+        con.row_factory = sqlite3.Row
+        cur = con.cursor()
+        query = f"select * from {table_name} where {user_name} = '{username}'"
+        for row in cur.execute(query):
+            ls.append({
+                user_id: row[user_id],
+                user_name: row[user_name],
+                pass_word: fernet.decrypt(row[pass_word]).decode(),
+                create_date: row[create_date]
+            })
+    except Exception as e:
+        status = 'error'
+        message = str(e)
+    return ls, len(ls), status, message
+
+
+def addUser(username, password):
+    status = 'success'
+    message = ''
+    if (not hasUser(username)):
+        try:
+            con = sqlite3.connect(db_name)
+            con.row_factory = sqlite3.Row
+            cur = con.cursor()
+            now = datetime.now()
+            params = (username, fernet.encrypt(password.encode()), now)
+            cur.execute(
+                f"insert into {table_name} values (null, ?, ?, ?)", params
+            )
+            con.commit()
+            con.close()
+            GithubService.pushToGithub()
+        except Exception as e:
+            status = 'error'
+            message = str(e)
+    else:
+        status = 'error'
+        message = 'Username Already Exists'
+    return status, message

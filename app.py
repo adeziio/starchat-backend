@@ -79,6 +79,13 @@ def user():
     return jsonify(username=get_jwt_identity())
 
 
+@app.route('/api/viewAllMessages', methods=['GET'])
+@jwt_required
+def viewAllMessages():
+    data, size, status, message = MessageServer.getAllMessages()
+    return jsonify(data=data, size=size, status=status, message=message)
+
+
 @app.route('/token/refresh', methods=['POST'])
 @jwt_required(refresh=True)
 def refresh():
