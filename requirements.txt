@@ -1,3 +1,8 @@
-Flask==1.1.4
-Werkzeug==1.0.1
-markupsafe==2.0.1
+Flask==2.2.2
+Werkzeug==2.2.2
+markupsafe==2.1.1
+flask-cors==3.0.10
+GitPython==3.1.27
+flask-jwt-extended==4.4.4
+requests==2.28.1
+cryptography==38.0.1
