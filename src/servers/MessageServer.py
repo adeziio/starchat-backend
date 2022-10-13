@@ -1,7 +1,5 @@
-import os
 import sqlite3
 from datetime import datetime
-from cryptography.fernet import Fernet
 
 from ..utils import GithubService
 from ..servers import ServerInfo
@@ -34,7 +32,7 @@ def create_db():
     con.close()
 
 
-def getAllMessages():
+def getMessages(roomname):
     status = 'success'
     message = ''
     try:
@@ -42,7 +40,7 @@ def getAllMessages():
         con = sqlite3.connect(db_name)
         con.row_factory = sqlite3.Row
         cur = con.cursor()
-        query = f"select * from {table_name}"
+        query = f"select * from {table_name} where {room_name} = '{roomname}'"
         for row in cur.execute(query):
             ls.append({
                 message_id: row[message_id],

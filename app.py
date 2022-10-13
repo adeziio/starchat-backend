@@ -13,6 +13,7 @@ from datetime import timedelta
 
 from src.servers import UserServer
 from src.servers import MessageServer
+from src.servers import RoomServer
 from src.utils import GithubService
 
 
@@ -80,10 +81,19 @@ def user():
     return jsonify(username=get_jwt_identity())
 
 
-@app.route('/api/viewAllMessages', methods=['GET'])
+@app.route('/api/viewMessages', methods=['POST'])
 @jwt_required()
-def viewAllMessages():
-    data, size, status, message = MessageServer.getAllMessages()
+def viewMessages():
+    body = request.json
+    roomname = body['roomname']
+    data, size, status, message = MessageServer.getMessages(roomname)
+    return jsonify(data=data, size=size, status=status, message=message)
+
+
+@app.route('/api/viewAllRoom', methods=['GET'])
+@jwt_required()
+def viewAllRoom():
+    data, size, status, message = RoomServer.getAllRoom()
     return jsonify(data=data, size=size, status=status, message=message)
 
 
@@ -105,5 +115,6 @@ def resource_not_found(e):
 if __name__ == '__main__':
     UserServer.init()
     MessageServer.init()
+    RoomServer.init()
     GithubService.pushToGithub()
     app.run()
