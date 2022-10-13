@@ -9,9 +9,9 @@ from ..servers import ServerInfo
 db_name = ServerInfo.getServerName()
 table_name = "users"
 user_id = "user_id"
+create_date = "create_date"
 user_name = "user_name"
 pass_word = "pass_word"
-create_date = "create_date"
 email = "email"
 
 key = bytes(os.getenv("USER_CRYPTO_KEY"), encoding='utf-8')
@@ -28,9 +28,9 @@ def create_db():
         con.execute(
             f'''create table if not exists {table_name} (
                 {user_id} INTEGER PRIMARY KEY AUTOINCREMENT,
+                {create_date} datetime,
                 {user_name} text not null unique,
                 {pass_word} text not null,
-                {create_date} datetime,
                 {email} text not null
             )'''
         )
@@ -69,9 +69,9 @@ def getUser(username):
         for row in cur.execute(query):
             ls.append({
                 user_id: row[user_id],
+                create_date: row[create_date],
                 user_name: row[user_name],
                 pass_word: fernet.decrypt(row[pass_word]).decode(),
-                create_date: row[create_date],
                 email: row[email]
             })
     except Exception as e:
@@ -89,7 +89,7 @@ def addUser(username, password, email):
             con.row_factory = sqlite3.Row
             cur = con.cursor()
             now = datetime.now()
-            params = (username, fernet.encrypt(password.encode()), now, email)
+            params = (now, username, fernet.encrypt(password.encode()), email)
             cur.execute(
                 f"insert into {table_name} values (null, ?, ?, ?, ?)", params
             )
