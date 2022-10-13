@@ -38,8 +38,9 @@ def registerUser():
     body = request.json
     username = body['username']
     password = body['password']
+    email = body['email']
     if (username and password):
-        status, message = "", ""
+        status, message = UserServer.addUser(username, password, email)
         return jsonify(status=status, message=message)
     return jsonify(status="error", message="Missing Fields")
 
@@ -50,7 +51,7 @@ def login():
     username = body['username']
     password = body['password']
     if (username and password):
-        ls, lenLs, status, message = UserServer.get(username)
+        ls, lenLs, status, message = UserServer.getUser(username)
         if (status == "success" and lenLs > 0):
             if (ls[0]['pass_word'] == password):
 
@@ -74,13 +75,13 @@ def logout():
 
 
 @app.route('/api/user', methods=['GET'])
-@jwt_required
+@jwt_required()
 def user():
     return jsonify(username=get_jwt_identity())
 
 
 @app.route('/api/viewAllMessages', methods=['GET'])
-@jwt_required
+@jwt_required()
 def viewAllMessages():
     data, size, status, message = MessageServer.getAllMessages()
     return jsonify(data=data, size=size, status=status, message=message)

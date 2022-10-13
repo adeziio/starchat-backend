@@ -28,7 +28,7 @@ def create_db():
                 {message_content} text not null,
                 {user_name} text not null,
                 {create_date} datetime,
-                {room_number} text not null,
+                {room_number} text not null
             )'''
         )
     con.close()

@@ -31,7 +31,7 @@ def create_db():
                 {user_name} text not null unique,
                 {pass_word} text not null,
                 {create_date} datetime,
-                {email} text not null,
+                {email} text not null
             )'''
         )
     con.close()
@@ -80,7 +80,7 @@ def getUser(username):
     return ls, len(ls), status, message
 
 
-def addUser(username, password):
+def addUser(username, password, email):
     status = 'success'
     message = ''
     if (not hasUser(username)):
@@ -89,9 +89,9 @@ def addUser(username, password):
             con.row_factory = sqlite3.Row
             cur = con.cursor()
             now = datetime.now()
-            params = (username, fernet.encrypt(password.encode()), now)
+            params = (username, fernet.encrypt(password.encode()), now, email)
             cur.execute(
-                f"insert into {table_name} values (null, ?, ?, ?)", params
+                f"insert into {table_name} values (null, ?, ?, ?, ?)", params
             )
             con.commit()
             con.close()
