@@ -12,6 +12,7 @@ user_id = "user_id"
 user_name = "user_name"
 pass_word = "pass_word"
 create_date = "create_date"
+email = "email"
 
 key = bytes(os.getenv("USER_CRYPTO_KEY"), encoding='utf-8')
 fernet = Fernet(key)
@@ -29,7 +30,8 @@ def create_db():
                 {user_id} INTEGER PRIMARY KEY AUTOINCREMENT,
                 {user_name} text not null unique,
                 {pass_word} text not null,
-                {create_date} datetime
+                {create_date} datetime,
+                {email} text not null,
             )'''
         )
     con.close()
@@ -69,7 +71,8 @@ def getUser(username):
                 user_id: row[user_id],
                 user_name: row[user_name],
                 pass_word: fernet.decrypt(row[pass_word]).decode(),
-                create_date: row[create_date]
+                create_date: row[create_date],
+                email: row[email]
             })
     except Exception as e:
         status = 'error'

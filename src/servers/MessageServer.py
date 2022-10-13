@@ -12,6 +12,7 @@ message_id = "message_id"
 message_content = "message_content"
 user_name = "user_name"
 create_date = "create_date"
+room_number = "room_number"
 
 
 def init():
@@ -26,7 +27,8 @@ def create_db():
                 {message_id} INTEGER PRIMARY KEY AUTOINCREMENT,
                 {message_content} text not null,
                 {user_name} text not null,
-                {create_date} datetime
+                {create_date} datetime,
+                {room_number} text not null,
             )'''
         )
     con.close()
@@ -46,7 +48,8 @@ def getAllMessages():
                 message_id: row[message_id],
                 message_content: row[message_content],
                 user_name: row[user_name],
-                create_date: row[create_date]
+                create_date: row[create_date],
+                room_number: row[room_number],
             })
     except Exception as e:
         status = 'error'
