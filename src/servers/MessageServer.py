@@ -9,10 +9,10 @@ from ..servers import ServerInfo
 db_name = ServerInfo.getServerName()
 table_name = "messages"
 message_id = "message_id"
+create_date = "create_date"
 message_content = "message_content"
 user_name = "user_name"
-create_date = "create_date"
-room_number = "room_number"
+room_name = "room_name"
 
 
 def init():
@@ -25,10 +25,10 @@ def create_db():
         con.execute(
             f'''create table if not exists {table_name} (
                 {message_id} INTEGER PRIMARY KEY AUTOINCREMENT,
+                {create_date} datetime,
                 {message_content} text not null,
                 {user_name} text not null,
-                {create_date} datetime,
-                {room_number} text not null
+                {room_name} text not null
             )'''
         )
     con.close()
@@ -46,10 +46,10 @@ def getAllMessages():
         for row in cur.execute(query):
             ls.append({
                 message_id: row[message_id],
+                create_date: row[create_date],
                 message_content: row[message_content],
                 user_name: row[user_name],
-                create_date: row[create_date],
-                room_number: row[room_number],
+                room_name: row[room_name],
             })
     except Exception as e:
         status = 'error'
