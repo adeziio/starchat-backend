@@ -28,7 +28,7 @@ app.config['JWT_COOKIE_SAMESITE'] = "None"
 app.config['JWT_ACCESS_COOKIE_PATH'] = "/api/"
 app.config['JWT_REFRESH_COOKIE_PATH'] = "/token/refresh"
 app.config['JWT_SECRET_KEY'] = os.getenv("JWT_SECRET_KEY")
-app.config['JWT_COOKIE_CSRF_PROJECT'] = True if os.getenv(
+app.config['JWT_COOKIE_CSRF_PROTECT'] = True if os.getenv(
     "ENV") == "prod" else False
 app.config['JWT_ACCESS_TOKEN_EXPIRES'] = timedelta(hours=1)
 jwt = JWTManager(app)
@@ -95,6 +95,15 @@ def viewMessages():
 def viewAllRoom():
     data, size, status, message = RoomServer.getAllRoom()
     return jsonify(data=data, size=size, status=status, message=message)
+
+
+@app.route('/api/addRoom', methods=['POST'])
+@jwt_required()
+def addRoom():
+    body = request.json
+    roomname = body['roomname']
+    status, message = RoomServer.addRoom(roomname)
+    return jsonify(status=status, message=message)
 
 
 @app.route('/token/refresh', methods=['POST'])
