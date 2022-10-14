@@ -34,6 +34,11 @@ app.config['JWT_ACCESS_TOKEN_EXPIRES'] = timedelta(hours=1)
 jwt = JWTManager(app)
 
 
+@app.route("/")
+def default():
+    return "Server is online..."
+
+
 @app.route('/registerUser', methods=['POST'])
 def registerUser():
     body = request.json
