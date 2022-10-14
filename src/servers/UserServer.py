@@ -5,6 +5,9 @@ from cryptography.fernet import Fernet
 
 from ..utils import GithubService
 from ..servers import ServerInfo
+from dotenv import load_dotenv, find_dotenv
+
+load_dotenv(find_dotenv())
 
 db_name = ServerInfo.getServerName()
 table_name = "users"
