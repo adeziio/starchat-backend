@@ -40,7 +40,7 @@ def getAllRoom():
     return data, size, status, message
 
 
-def addRoom(roomname):
+def addRoom(username, roomname):
     status = 'error'
     message = 'Failed to add room'
     if (not hasRoom(roomname)):
@@ -49,7 +49,8 @@ def addRoom(roomname):
             response = AWSController.RoomsController.put_item(
                 Item={
                     'room_name': roomname,
-                    'create_date': createdate
+                    'create_date': createdate,
+                    'created_by': username
                 }
             )
             if (response['ResponseMetadata']['HTTPStatusCode'] == 200):

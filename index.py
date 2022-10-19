@@ -101,9 +101,10 @@ def viewAllRoom():
 @app.route('/api/addRoom', methods=['POST'])
 @jwt_required()
 def addRoom():
+    username = get_jwt_identity()
     body = request.json
     roomname = body['roomname']
-    status, message = RoomService.addRoom(roomname)
+    status, message = RoomService.addRoom(username, roomname)
     return jsonify(status=status, message=message)
 
 
