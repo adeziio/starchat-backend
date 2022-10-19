@@ -27,8 +27,7 @@ app.config['JWT_COOKIE_SAMESITE'] = "None"
 app.config['JWT_ACCESS_COOKIE_PATH'] = "/api/"
 app.config['JWT_REFRESH_COOKIE_PATH'] = "/token/refresh"
 app.config['JWT_SECRET_KEY'] = os.getenv("JWT_SECRET_KEY")
-app.config['JWT_COOKIE_CSRF_PROTECT'] = True if os.getenv(
-    "ENV") == "prod" else False
+app.config['JWT_COOKIE_CSRF_PROTECT'] = False
 app.config['JWT_ACCESS_TOKEN_EXPIRES'] = timedelta(hours=1)
 jwt = JWTManager(app)
 
