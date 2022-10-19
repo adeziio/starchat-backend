@@ -37,13 +37,23 @@ def default():
     return "Server is online..."
 
 
+@app.route('/forgotUsernameAndPassword', methods=['POST'])
+def forgotUsernameAndPassword():
+    body = request.json
+    email = body['email']
+    if (email):
+        status, message = UserService.sendEmail(email)
+        return jsonify(status=status, message=message)
+    return jsonify(status="error", message="Missing Fields")
+
+
 @app.route('/registerUser', methods=['POST'])
 def registerUser():
     body = request.json
     username = body['username']
     password = body['password']
     email = body['email']
-    if (username and password):
+    if (username and password and email):
         status, message = UserService.addUser(username, password, email)
         return jsonify(status=status, message=message)
     return jsonify(status="error", message="Missing Fields")

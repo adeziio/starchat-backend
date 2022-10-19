@@ -82,3 +82,9 @@ def addUser(username, password, email):
         status = 'error'
         message = 'Username Already Exists'
     return status, message
+
+
+def sendEmail(email):
+    status = 'error'
+    message = 'Email not found'
+    return status, message
