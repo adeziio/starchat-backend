@@ -11,10 +11,9 @@ from flask_jwt_extended import (
 )
 from datetime import timedelta
 
-from src.servers import UserServer
-from src.servers import MessageServer
-from src.servers import RoomServer
-from src.utils import GithubService
+from src.services import UserService
+from src.services import MessageService
+from src.services import RoomService
 
 
 app = Flask(__name__)
@@ -46,7 +45,7 @@ def registerUser():
     password = body['password']
     email = body['email']
     if (username and password):
-        status, message = UserServer.addUser(username, password, email)
+        status, message = UserService.addUser(username, password, email)
         return jsonify(status=status, message=message)
     return jsonify(status="error", message="Missing Fields")
 
@@ -56,14 +55,12 @@ def login():
     body = request.json
     username = body['username']
     password = body['password']
-    if (username and password):
-        ls, lenLs, status, message = UserServer.getUser(username)
-        if (status == "success" and lenLs > 0):
-            if (ls[0]['pass_word'] == password):
-
+    if (username != "" and password != ""):
+        user_name, pass_word, status, message = UserService.getUser(username)
+        if (status == "success"):
+            if (username == user_name and pass_word == password):
                 access_token = create_access_token(identity=username)
                 refresh_token = create_refresh_token(identity=username)
-
                 response = jsonify(username=username,
                                    status=status, message=message)
                 set_access_cookies(response, access_token)
@@ -91,14 +88,14 @@ def user():
 def viewMessages():
     body = request.json
     roomname = body['roomname']
-    data, size, status, message = MessageServer.getMessages(roomname)
+    data, size, status, message = MessageService.getMessages(roomname)
     return jsonify(data=data, size=size, status=status, message=message)
 
 
 @app.route('/api/viewAllRoom', methods=['GET'])
 @jwt_required()
 def viewAllRoom():
-    data, size, status, message = RoomServer.getAllRoom()
+    data, size, status, message = RoomService.getAllRoom()
     return jsonify(data=data, size=size, status=status, message=message)
 
 
@@ -107,7 +104,7 @@ def viewAllRoom():
 def addRoom():
     body = request.json
     roomname = body['roomname']
-    status, message = RoomServer.addRoom(roomname)
+    status, message = RoomService.addRoom(roomname)
     return jsonify(status=status, message=message)
 
 
@@ -127,8 +124,4 @@ def resource_not_found(e):
 
 
 if __name__ == '__main__':
-    UserServer.init()
-    MessageServer.init()
-    RoomServer.init()
-    GithubService.pushToGithub()
     app.run()
