@@ -22,8 +22,8 @@ CORS(app, origins=[os.getenv("UI_HOST_URL")], methods=['GET', 'POST'], allow_hea
      'Content-Type', 'Authorization', 'x-csrf-token'], supports_credentials=True)
 
 app.config['JWT_TOKEN_LOCATION'] = ['cookies']
-app.config['JWT_COOKIE_SECURE'] = True
-app.config['JWT_COOKIE_SAMESITE'] = "None"
+# app.config['JWT_COOKIE_SECURE'] = True
+# app.config['JWT_COOKIE_SAMESITE'] = "None"
 app.config['JWT_ACCESS_COOKIE_PATH'] = "/api/"
 app.config['JWT_REFRESH_COOKIE_PATH'] = "/token/refresh"
 app.config['JWT_SECRET_KEY'] = os.getenv("JWT_SECRET_KEY")
