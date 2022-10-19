@@ -18,17 +18,16 @@ from src.services import RoomService
 
 app = Flask(__name__)
 load_dotenv(find_dotenv())
-CORS(app, origins=[os.getenv("UI_HOST_URL")], methods=['GET', 'POST'], allow_headers=[
-     'Content-Type', 'Authorization', 'x-csrf-token'], supports_credentials=True)
+# CORS(app, origins=[os.getenv("UI_HOST_URL")], methods=['GET', 'POST'], allow_headers=[
+#      'Content-Type', 'Authorization', 'x-csrf-token'], supports_credentials=True)
 
 app.config['JWT_TOKEN_LOCATION'] = ['cookies']
 app.config['JWT_COOKIE_SECURE'] = True
 app.config['JWT_COOKIE_SAMESITE'] = "None"
-app.config['JWT_COOKIE_DOMAIN'] = "starchat.vercel.app"
 app.config['JWT_ACCESS_COOKIE_PATH'] = "/api/"
 app.config['JWT_REFRESH_COOKIE_PATH'] = "/token/refresh"
 app.config['JWT_SECRET_KEY'] = os.getenv("JWT_SECRET_KEY")
-app.config['JWT_COOKIE_CSRF_PROTECT'] = False
+app.config['JWT_COOKIE_CSRF_PROTECT'] = True
 app.config['JWT_ACCESS_TOKEN_EXPIRES'] = timedelta(hours=1)
 jwt = JWTManager(app)
 
