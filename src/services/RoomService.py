@@ -30,10 +30,11 @@ def getAllRoom():
     try:
         response = AWSController.RoomsController.scan()
         if (response['ResponseMetadata']['HTTPStatusCode'] == 200):
-            data = response['Items']
-            size = response['Count']
-            status = 'success'
-            message = ''
+            if ('Items' in response):
+                data = response['Items']
+                size = response['Count']
+                status = 'success'
+                message = ''
     except Exception as e:
         status = 'error'
         message = str(e)

@@ -1,8 +1,6 @@
 import os
-from time import time
 from flask import Flask, jsonify, make_response, request
 from dotenv import load_dotenv, find_dotenv
-from flask_cors import CORS
 from flask_jwt_extended import (
     JWTManager, jwt_required, create_access_token,
     create_refresh_token,
@@ -10,6 +8,7 @@ from flask_jwt_extended import (
     set_refresh_cookies, unset_jwt_cookies
 )
 from datetime import timedelta
+from flask_mail import Mail, Message
 
 from src.services import UserService
 from src.services import MessageService
@@ -18,8 +17,6 @@ from src.services import RoomService
 
 app = Flask(__name__)
 load_dotenv(find_dotenv())
-# CORS(app, origins=[os.getenv("UI_HOST_URL")], methods=['GET', 'POST'], allow_headers=[
-#      'Content-Type', 'Authorization', 'x-csrf-token'], supports_credentials=True)
 
 app.config['JWT_TOKEN_LOCATION'] = ['cookies']
 app.config['JWT_COOKIE_SECURE'] = True
@@ -32,6 +29,15 @@ app.config['JWT_ACCESS_TOKEN_EXPIRES'] = timedelta(hours=1)
 jwt = JWTManager(app)
 
 
+app.config['MAIL_SERVER'] = 'smtp.mail.yahoo.com'
+app.config['MAIL_PORT'] = 465
+app.config['MAIL_USERNAME'] = os.getenv('FREEFLASH_MAIL_USERNAME')
+app.config['MAIL_PASSWORD'] = os.getenv('FREEFLASH_MAIL_PASSWORD')
+app.config['MAIL_USE_TLS'] = False
+app.config['MAIL_USE_SSL'] = True
+mail = Mail(app)
+
+
 @app.route("/")
 def default():
     return "Server is online..."
@@ -42,7 +48,29 @@ def forgotUsernameAndPassword():
     body = request.json
     email = body['email']
     if (email):
-        status, message = UserService.sendEmail(email)
+        user_name, pass_word, status, message = UserService.getEmail(email)
+        msg = Message(
+            f'Starchat',
+            sender=os.getenv('FREEFLASH_MAIL_USERNAME'),
+            recipients=[email]
+        )
+        html = '<html>'
+        html += '<head>'
+        html += '<title>Star Chat</title>'
+        html += '</head>'
+        html += '<body>'
+        html += '<a href="https://starchat.vercel.app/" style="text-decoration:none; font-size: 7rem; color: #1976d2; font-family: cursive;">Star Chat</a>'
+        html += f'<p style="font-size: 3rem; margin: 0rem;"><span style="font-weight: bold;">Username:</span> {user_name}</p>'
+        html += f'<p style="font-size: 3rem; margin: 0rem;"><span style="font-weight: bold;">Password:</span> {pass_word}</p>'
+        html += '</body>'
+        html += '</html>'
+        msg.html = html
+
+        try:
+            mail.send(msg)
+        except:
+            jsonify(status="error", message="Failed to send email")
+
         return jsonify(status=status, message=message)
     return jsonify(status="error", message="Missing Fields")
 

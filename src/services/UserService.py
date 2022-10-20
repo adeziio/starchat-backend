@@ -1,6 +1,7 @@
 import os
 from datetime import datetime
 from cryptography.fernet import Fernet
+from boto3.dynamodb.conditions import Attr
 from dotenv import load_dotenv, find_dotenv
 from ..controllers import AWSController
 
@@ -84,7 +85,23 @@ def addUser(username, password, email):
     return status, message
 
 
-def sendEmail(email):
+def getEmail(email):
     status = 'error'
     message = 'Email not found'
-    return status, message
+    user_name = ''
+    pass_word = ''
+    try:
+        response = AWSController.UsersController.scan(
+            FilterExpression=Attr('email').eq(email)
+        )
+        if (response['ResponseMetadata']['HTTPStatusCode'] == 200):
+            if ('Items' in response):
+                user_name = response['Items'][0]['user_name']
+                pass_word = fernet.decrypt(
+                    bytes(response['Items'][0]['pass_word'], encoding='utf-8')).decode()
+                status = 'success'
+                message = ''
+    except Exception as e:
+        status = 'error'
+        message = str(e)
+    return user_name, pass_word, status, message
