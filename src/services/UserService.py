@@ -75,7 +75,7 @@ def addUser(username, password, email):
             )
             if (response['ResponseMetadata']['HTTPStatusCode'] == 200):
                 status = 'success'
-                message = ''
+                message = 'You have successfully registered'
         except Exception as e:
             status = 'error'
             message = str(e)
@@ -100,7 +100,7 @@ def getEmail(email):
                 pass_word = fernet.decrypt(
                     bytes(response['Items'][0]['pass_word'], encoding='utf-8')).decode()
                 status = 'success'
-                message = ''
+                message = 'Instructions have been sent to your email address'
     except Exception as e:
         status = 'error'
         message = str(e)
