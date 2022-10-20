@@ -129,9 +129,20 @@ def viewMessages():
     return jsonify(data=data, size=size, status=status, message=message)
 
 
-@app.route('/api/viewAllRoom', methods=['GET'])
+@app.route('/api/addMessage', methods=['POST'])
 @jwt_required()
-def viewAllRoom():
+def addMessage():
+    username = get_jwt_identity()
+    body = request.json
+    roomname = body['roomname']
+    message = body['message']
+    status, message = MessageService.addMessage(username, roomname, message)
+    return jsonify(status=status, message=message)
+
+
+@app.route('/api/viewRooms', methods=['GET'])
+@jwt_required()
+def viewRooms():
     data, size, status, message = RoomService.getAllRoom()
     return jsonify(data=data, size=size, status=status, message=message)
 
