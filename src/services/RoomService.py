@@ -17,7 +17,7 @@ def hasRoom(roomname):
             if ('Item' in response):
                 if (response['Item']['room_name'] == roomname):
                     ret = True
-    except Exception as e:
+    except Exception:
         ret = False
     return ret
 
@@ -38,7 +38,7 @@ def getAllRoom():
     except Exception as e:
         status = 'error'
         message = str(e)
-    return data, size, status, message
+    return sorted(data, key=lambda x: x['create_date'], reverse=True), size, status, message
 
 
 def addRoom(username, roomname):

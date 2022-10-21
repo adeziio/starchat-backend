@@ -135,8 +135,8 @@ def addMessage():
     username = get_jwt_identity()
     body = request.json
     roomname = body['roomname']
-    message = body['message']
-    status, message = MessageService.addMessage(username, roomname, message)
+    text = body['message']
+    status, message = MessageService.addMessage(username, roomname, text)
     return jsonify(status=status, message=message)
 
 

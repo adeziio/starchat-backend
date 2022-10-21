@@ -1,41 +1,40 @@
 from datetime import datetime
+from boto3.dynamodb.conditions import Attr
 from ..controllers import AWSController
 
 
 def getMessages(roomname):
     status = 'error'
     message = f'Failed to get messages for room {roomname}'
+    data = []
+    size = 0
     try:
-        response = AWSController.MessagesController.get_item(
-            Key={
-                'room_name': roomname
-            },
-            AttributesToGet=[
-                'user_name', 'room_name', 'create_date', 'message'
-            ]
+        response = AWSController.MessagesController.scan(
+            FilterExpression=Attr('room_name').eq(roomname)
         )
         if (response['ResponseMetadata']['HTTPStatusCode'] == 200):
-            data = response['Items']
-            size = response['Count']
-            status = 'success'
-            message = ''
+            if ('Items' in response):
+                data = response['Items']
+                size = response['Count']
+                status = 'success'
+                message = ''
     except Exception as e:
         status = 'error'
         message = str(e)
-    return data, size, status, message
+    return sorted(data, key=lambda x: x['create_date'], reverse=False), size, status, message
 
 
-def addMessage(username, roomname, message):
+def addMessage(username, roomname, text):
     status = 'error'
     message = f'Failed to add message to room {roomname}'
     try:
         createdate = str(datetime.now())
         response = AWSController.MessagesController.put_item(
             Item={
+                'create_date': createdate,
                 'user_name': username,
                 'room_name': roomname,
-                'create_date': createdate,
-                'message': message
+                'message': text
             }
         )
         if (response['ResponseMetadata']['HTTPStatusCode'] == 200):

@@ -26,7 +26,7 @@ def hasUser(username):
             if ('Item' in response):
                 if (response['Item']['user_name'] == username):
                     ret = True
-    except Exception as e:
+    except Exception:
         ret = False
     return ret
 
