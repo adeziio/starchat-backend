@@ -58,17 +58,15 @@ def getUser(username):
     return user_name, pass_word, status, message
 
 
-def addUser(username, password, email):
+def addUser(create_date, username, password, email):
     status = 'error'
     message = 'Failed to add user'
     if (not hasUser(username)):
         try:
-            createdate = str(datetime.now())
             response = AWSController.UsersController.put_item(
                 Item={
+                    'create_date': create_date,
                     'user_name': username,
-                    'create_date': createdate,
-                    'last_updated_date': createdate,
                     'pass_word': fernet.encrypt(password.encode()).decode("utf-8"),
                     'email': email
                 }
