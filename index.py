@@ -78,13 +78,11 @@ def forgotUsernameAndPassword():
 @app.route('/registerUser', methods=['POST'])
 def registerUser():
     body = request.json
-    create_date = body['create_date']
     username = body['username']
     password = body['password']
     email = body['email']
-    if (create_date and username and password and email):
-        status, message = UserService.addUser(
-            create_date, username, password, email)
+    if (username and password and email):
+        status, message = UserService.addUser(username, password, email)
         return jsonify(status=status, message=message)
     return jsonify(status="error", message="Missing Fields")
 

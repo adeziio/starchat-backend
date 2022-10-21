@@ -65,8 +65,8 @@ def addUser(create_date, username, password, email):
         try:
             response = AWSController.UsersController.put_item(
                 Item={
-                    'create_date': create_date,
                     'user_name': username,
+                    'create_date': str(datetime.now()),
                     'pass_word': fernet.encrypt(password.encode()).decode("utf-8"),
                     'email': email
                 }

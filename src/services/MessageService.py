@@ -28,10 +28,9 @@ def addMessage(username, roomname, text):
     status = 'error'
     message = f'Failed to add message to room {roomname}'
     try:
-        createdate = str(datetime.now())
         response = AWSController.MessagesController.put_item(
             Item={
-                'create_date': createdate,
+                'create_date': str(datetime.now()),
                 'user_name': username,
                 'room_name': roomname,
                 'message': text

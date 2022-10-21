@@ -46,11 +46,10 @@ def addRoom(username, roomname):
     message = 'Failed to add room'
     if (not hasRoom(roomname)):
         try:
-            createdate = str(datetime.now())
             response = AWSController.RoomsController.put_item(
                 Item={
                     'room_name': roomname,
-                    'create_date': createdate,
+                    'create_date': str(datetime.now()),
                     'created_by': username
                 }
             )
