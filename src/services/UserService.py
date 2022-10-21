@@ -58,7 +58,7 @@ def getUser(username):
     return user_name, pass_word, status, message
 
 
-def addUser(create_date, username, password, email):
+def addUser(username, password, email):
     status = 'error'
     message = 'Failed to add user'
     if (not hasUser(username)):
